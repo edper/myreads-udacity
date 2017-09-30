@@ -1,15 +1,21 @@
 import React, { Component } from 'react'
 import * as BooksAPI from './BooksAPI'
 import Bookshelf  from './Bookshelf'
+import escapeRegExp from 'escape-string-regexp'
 
 export class BooksSearchPage extends Component {
   
   state = {
-    query: ''
+    query: '',
+    searchBooks:[]
   }
 
   updateQuery = (query) => {
-    this.setState({ query: query.trim() })
+    setTimeout(
+    BooksAPI.search(this.query, 20).then((res)=>
+    { if (res)
+        this.setState({ searchBooks: res })
+    }),800)
   }
 
   clearQuery = () => {
@@ -23,11 +29,19 @@ export class BooksSearchPage extends Component {
     const { query } = this.state
 
     let showingBooks
+    let ShelfBooksAuthor=[], ShelfBooksTitle=[], NonShelfAuthor=[], NonShelfTitle=[]
 
     if (query) {
-      showingBooks = BooksAPI.search(query, 20).then((res)=>res)
-      let res = showingBooks.then((r)=>r)
-      console.log(' r : ', res)      
+      showingBooks = new Set()
+      const match = new RegExp(escapeRegExp(query), 'i')
+      console.log('All Books : ', this.searchBooks)
+      {/*
+      NonShelfTitle = this.allBooks.filter((bk) => match.test(bk.title))
+      NonShelfAuthor = this.allBooks.filter((bk) => match.test(bk.authors))
+      ShelfBooksTitle = mybooks.filter((bk) => match.test(bk.title))
+      ShelfBooksAuthor = mybooks.filter((bk) => match.test(bk.authors))
+        */  
+      }
     }
 
     return (
