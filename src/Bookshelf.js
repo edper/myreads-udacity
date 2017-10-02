@@ -34,7 +34,7 @@ class Bookshelf extends Component {
                                         </div>
                                     </div>
                                     <div className="book-title">{mybook.title}</div>
-                                    <div className="book-authors">{mybook.authors.join(', ')}</div>
+                                    <div className="book-authors">{(mybook.authors.length>1)?mybook.authors.join(' '):mybook.authors}</div>
                                 </div>
                             </li>      					
                         )

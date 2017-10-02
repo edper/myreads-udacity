@@ -2,48 +2,67 @@ import React, { Component } from 'react'
 import * as BooksAPI from './BooksAPI'
 import Bookshelf  from './Bookshelf'
 import escapeRegExp from 'escape-string-regexp'
+import PropTypes from 'prop-types'
 
 export class BooksSearchPage extends Component {
   
   state = {
     query: '',
-    searchBooks:[]
+    searchBooks:[],
+    showingBooks:[]
   }
 
-  updateQuery = (query) => {
-    setTimeout(
-    BooksAPI.search(this.query, 20).then((res)=>
-    { if (res)
-        this.setState({ searchBooks: res })
-    }),800)
+  static propTypes = {
+    query : PropTypes.string,
+    searchBooks : PropTypes.array,
+    showingBooks : PropTypes.array
   }
 
-  clearQuery = () => {
-    this.setState({ query: '' })
+  updateQuery = (q) => {
+        this.setState({query:q});
+        setTimeout(()=>{
+          BooksAPI.search(q, 20).then(
+            (res)=> {
+              this.setState({ searchBooks: res })
+              this.updateShowingBooks(res)
+            }
+          )      
+        },300)
+  }
+
+  setShelfNone = (arr) => {
+   let newArray = arr.map((obj)=>({...obj,['shelf']:"none"})) 
+   return newArray
+  }
+  makeUniqueArray = (arr) => {
+    return [...new Set( arr.map(obj => obj)) ]
+  }
+
+  updateShowingBooks = (srchBooks) => {
+    let ShelfBooksAuthor=[], ShelfBooksTitle=[], NonShelfAuthor=[], NonShelfTitle=[], mergeBooks=[], mergeBooksShelf=[], mergeBooksNonShelf=[]
+    const match = new RegExp(escapeRegExp(this.state.query), 'i')
+    if (srchBooks) {
+      NonShelfTitle = srchBooks.filter((bk) => match.test(bk.title))
+      NonShelfAuthor = srchBooks.filter((bk) => match.test(bk.authors))  
+      NonShelfTitle && (mergeBooksNonShelf=mergeBooksNonShelf.concat(NonShelfTitle))
+      NonShelfAuthor && (mergeBooksNonShelf=mergeBooksNonShelf.concat(NonShelfAuthor))
+    }
+    mergeBooksNonShelf = this.setShelfNone(mergeBooksNonShelf)
+    ShelfBooksTitle = this.props.mybooks.filter((bk) => match.test(bk.title))
+    ShelfBooksAuthor = this.props.mybooks.filter((bk) => match.test(bk.authors))
+    ShelfBooksTitle && (mergeBooksShelf=mergeBooksShelf.concat(ShelfBooksTitle))
+    ShelfBooksAuthor && (mergeBooksShelf=mergeBooksShelf.concat(ShelfBooksAuthor))
+    mergeBooks = mergeBooksShelf.concat(mergeBooksNonShelf)
+    mergeBooks = this.makeUniqueArray(mergeBooks)
+    this.setState({showingBooks:mergeBooks}) 
   }
 
   
   render() {
 
-    const { mybooks, onSetSearchPage, onUpdateBookShelf } = this.props
-    const { query } = this.state
-
-    let showingBooks
-    let ShelfBooksAuthor=[], ShelfBooksTitle=[], NonShelfAuthor=[], NonShelfTitle=[]
-
-    if (query) {
-      showingBooks = new Set()
-      const match = new RegExp(escapeRegExp(query), 'i')
-      console.log('All Books : ', this.searchBooks)
-      {/*
-      NonShelfTitle = this.allBooks.filter((bk) => match.test(bk.title))
-      NonShelfAuthor = this.allBooks.filter((bk) => match.test(bk.authors))
-      ShelfBooksTitle = mybooks.filter((bk) => match.test(bk.title))
-      ShelfBooksAuthor = mybooks.filter((bk) => match.test(bk.authors))
-        */  
-      }
-    }
-
+    const onSetSearchPage  = this.props.onSetSearchPage
+    const onUpdateBookShelf  = this.props.onUpdateBookShelf
+    
     return (
         <div className="search-books">
             <div className="search-books-bar">
@@ -59,7 +78,7 @@ export class BooksSearchPage extends Component {
                 */}
                 <input type="text" 
                   placeholder="Search by title or author"
-                  value={query}
+                  value={this.state.query}
                   onChange={(event) => this.updateQuery(event.target.value)}
                 />
 
@@ -67,9 +86,10 @@ export class BooksSearchPage extends Component {
             </div>
             <div className="search-books-results"> 
                 {
-                  showingBooks && (
+                  this.state.showingBooks.length>0 && this.state.query.trim().length>0
+                  && (
                     <Bookshelf 
-                      mybooks={mybooks} 
+                      mybooks={this.state.showingBooks} 
                       onUpdateBookShelf={onUpdateBookShelf}
                     />
                   )
