@@ -39,13 +39,13 @@ class App extends React.Component {
   */
   updateBookShelf = (book, shelf) => {
     // Change to Camel case before updating book shelf
-    shelf=this.toCamelShelf(shelf)
+    shelf=this.toCamelShelf(shelf);
     // Update Book shelf and then change state to update UI
     BooksAPI.update(book, shelf).then(()=>{
       this.setState((state)=>({      
         books: state.books.map((bk)=>bk.id === book.id ? {...bk, shelf:shelf} : bk)
-      }))
-  })}
+      }));
+  })};
 
   /**
   * @description Add a book to shelf freshly picked from the library
@@ -54,12 +54,12 @@ class App extends React.Component {
   */
   addBookToShelf = (book, shelf) => {
     // Change to Camel case before updating book shelf
-    shelf=this.toCamelShelf(shelf)
+    shelf=this.toCamelShelf(shelf);
     // Update first the shelf for the new book
-    book.shelf = shelf
+    book.shelf = shelf;
     // Check if book is existent
-    let idx = this.state.books.findIndex(bk => bk['id'] === book.id)
-    let bk = this.state.books
+    let idx = this.state.books.findIndex(bk => bk['id'] === book.id);
+    let bk = this.state.books;
     // If not found add the book then update book and change state to update UI
     if (idx===-1) {
       this.setState({books:bk.concat(book)});

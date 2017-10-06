@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 
 class Books extends Component {
   render() {
-    const {book} = this.props
+    const {book} = this.props;
     return (
             <div className="book">
                 <div className="book-top">
