@@ -5,14 +5,14 @@ import PropTypes from 'prop-types'
 class BooksList extends Component {
    
   static propTypes = {
-        mybooks : PropTypes.array.isRequired,
+        books : PropTypes.array.isRequired,
         onUpdateBookShelf: PropTypes.func.isRequired
-      }
+      };
       
   render() {
 
-    const { mybooks, onUpdateBookShelf } = this.props
-    const categories = ["Currently Reading", "Want To Read", "Read"]
+    const { books, onUpdateBookShelf } = this.props;
+    const categories = ["Currently Reading", "Want To Read", "Read"];
 
     return (
         <div className="list-books-content">
@@ -23,7 +23,7 @@ class BooksList extends Component {
                         <h2 className="bookshelf-title">{category}</h2>
                         <div className="bookshelf-books">
                             <Bookshelf 
-                             mybooks={ mybooks.filter( 
+                             books={ books.filter( 
                              (mybook)=> mybook.shelf.toLowerCase()===category.replace(/ /g,'').toLowerCase())} 
                              onUpdateBookShelf={onUpdateBookShelf}
                             />
@@ -37,4 +37,4 @@ class BooksList extends Component {
     }
 }
 
-export default BooksList
+export default BooksList;
