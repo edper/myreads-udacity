@@ -1,20 +1,23 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 
-class Bookshelf extends Component {
+// Component to display books whether in the Shelf or in Search library
+class BooksShelf extends Component {
 
-  static propTypes = {
+    // Prop types for book shelf to use
+    static propTypes = {
         books : PropTypes.array.isRequired,
         onUpdateBookShelf: PropTypes.func
     }
     
-  render() {
+    render() {
 
     const {books, onUpdateBookShelf} = this.props;
     
     return (
             <ol className="books-grid">
                 {
+                    // Display books individually
                     books.map(
                         (book)=> (
                             <li key={book.id}>
@@ -45,4 +48,4 @@ class Bookshelf extends Component {
   }
 }
 
-export default Bookshelf;
+export default BooksShelf;

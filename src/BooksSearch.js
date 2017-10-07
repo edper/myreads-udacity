@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router-dom'
 
-
+// Component to display search button for books search in the library
 class BooksSearch extends Component {
     
   render() {
@@ -13,4 +13,4 @@ class BooksSearch extends Component {
   }
 }
 
-export default BooksSearch
+export default BooksSearch;

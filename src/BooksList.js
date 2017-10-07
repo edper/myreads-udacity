@@ -1,15 +1,17 @@
 import React, {Component} from 'react'
-import Bookshelf  from './Bookshelf'
+import BooksShelf  from './BooksShelf'
 import PropTypes from 'prop-types'
 
+// Component to display Books in the main UI or books on the shelves
 class BooksList extends Component {
    
-  static propTypes = {
+    // Prop types for bookslist component to use
+    static propTypes = {
         books : PropTypes.array.isRequired,
         onUpdateBookShelf: PropTypes.func.isRequired
       };
       
-  render() {
+    render() {
 
     const { books, onUpdateBookShelf } = this.props;
     const categories = ["Currently Reading", "Want To Read", "Read"];
@@ -18,11 +20,12 @@ class BooksList extends Component {
         <div className="list-books-content">
             <div>
                 {
+                    // List/Display all the books on the shelf
                     categories.map((category,index)=>(
                     <div className="bookshelf" key={index}>
                         <h2 className="bookshelf-title">{category}</h2>
                         <div className="bookshelf-books">
-                            <Bookshelf 
+                            <BooksShelf 
                              books={ books.filter( 
                              (mybook)=> mybook.shelf.toLowerCase()===category.replace(/ /g,'').toLowerCase())} 
                              onUpdateBookShelf={onUpdateBookShelf}

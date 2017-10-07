@@ -1,17 +1,20 @@
 import React, { Component } from 'react'
 import * as BooksAPI from './BooksAPI'
-import Bookshelf  from './Bookshelf'
+import BooksShelf  from './BooksShelf'
 import escapeRegExp from 'escape-string-regexp'
 import PropTypes from 'prop-types'
 
+// Component for Book Search page or the book library search
 export class BooksSearchPage extends Component {
   
+  // State for query by the user, search books and books to show in the list
   state = {
     query: '', // Query
     searchBooks:[], // Search Books that could have duplicates
     showingBooks:[] // Books shown to user on screen after query
   };
 
+  // Proptypes for BooksSearchPage component to use
   static propTypes = {
     onAddBookToShelf: PropTypes.func.isRequired
   };
@@ -22,6 +25,7 @@ export class BooksSearchPage extends Component {
   */
   updateQuery = (q) => {
         this.setState({query:q});
+        // Put timeout in a search so as not to overwhelmed the system
         setTimeout(()=>{
           BooksAPI.search(q, 20).then(
             (res)=> {
@@ -77,14 +81,14 @@ export class BooksSearchPage extends Component {
     ShelfBooksTitle = this.props.books.filter((bk) => match.test(bk.title));
     ShelfBooksAuthor = this.props.books.filter((bk) => match.test(bk.authors));
     // Merge Shelves books
-    ShelfBooksTitle && (mergeBooksShelf=mergeBooksShelf.concat(ShelfBooksTitle))
-    ShelfBooksAuthor && (mergeBooksShelf=mergeBooksShelf.concat(ShelfBooksAuthor))
+    ShelfBooksTitle && (mergeBooksShelf=mergeBooksShelf.concat(ShelfBooksTitle));
+    ShelfBooksAuthor && (mergeBooksShelf=mergeBooksShelf.concat(ShelfBooksAuthor));
     // Merge All books
-    mergeBooks = mergeBooksShelf.concat(mergeBooksNonShelf)
+    mergeBooks = mergeBooksShelf.concat(mergeBooksNonShelf);
     // Make sure no duplicate in the search books
-    mergeBooks = this.makeUniqueArray(mergeBooks)
+    mergeBooks = this.makeUniqueArray(mergeBooks);
     // Change state for books to be shown so UI could be triggered
-    this.setState({showingBooks:mergeBooks})
+    this.setState({showingBooks:mergeBooks});
   }
 
   
@@ -98,19 +102,23 @@ export class BooksSearchPage extends Component {
             <div className="search-books-bar">
               <a className="close-search" onClick={onSetSearchPage}>Close</a>
               <div className="search-books-input-wrapper">
-                <input type="text" 
+                {
+                  // User Input area for book search 
+                  <input type="text" 
                   placeholder="Search by title or author"
                   value={this.state.query}
                   onChange={(event) => {this.updateQuery(event.target.value); 
                       this.makeUniqueArray(this.props.books.concat(this.state.showingBooks));}}
-                />
+                  />
+                }
               </div>
             </div>
             <div className="search-books-results"> 
                 {
+                  // if there are books to show based on query display it
                   this.state.showingBooks.length>0 && this.state.query.trim().length>0
                   && (
-                    <Bookshelf 
+                    <BooksShelf 
                       books={this.state.showingBooks} 
                       onUpdateBookShelf={onAddBookToShelf}
                     />

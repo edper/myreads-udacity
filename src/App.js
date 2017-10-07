@@ -4,16 +4,19 @@ import BooksList  from './BooksList'
 import BooksSearch  from './BooksSearch'
 import BooksSearchPage  from './BooksSearchPage'
 import * as BooksAPI from './BooksAPI'
-import * as _ from "lodash";
 import './App.css'
 
 class App extends React.Component {
 
+  // State for books and page (i.e. whether search or just main page)
   state = {
-    books : [], 
-    showSearchPage: false
+    books : [], // Array for books on the shelf
+    showSearchPage: false // Flag whether to show search page or not 
   }
 
+  /**
+  * @description Get all the books from the shelf 
+  */
   componentDidMount() { 
     BooksAPI.getAll().then( (books)=> { 
     	this.setState({books});
@@ -27,8 +30,8 @@ class App extends React.Component {
   */
   toCamelShelf(Shelf) {
     let shelf=Shelf;
-    {Shelf==="currentlyreading" && (shelf="currentlyReading")};
-    {Shelf==="wanttoread" && (shelf="wantToRead")};
+    Shelf==="currentlyreading" && (shelf="currentlyReading");
+    Shelf==="wanttoread" && (shelf="wantToRead");
     return shelf;
   }
 
@@ -45,7 +48,8 @@ class App extends React.Component {
       this.setState((state)=>({      
         books: state.books.map((bk)=>bk.id === book.id ? {...bk, shelf:shelf} : bk)
       }));
-  })};
+    });
+  }
 
   /**
   * @description Add a book to shelf freshly picked from the library
@@ -71,6 +75,7 @@ class App extends React.Component {
     return (
       <div className="app">
         {this.state.showSearchPage ? (
+          // if Show Search Page display Search Page component
           <Route path="/search" render={({history})=>(
             <BooksSearchPage books={this.state.books} onSetSearchPage={
                 ()=>{ this.setState({showSearchPage:false});
@@ -80,6 +85,7 @@ class App extends React.Component {
                 />
           )} />
         ) : (
+          // if not Show Search Page display book list in the main UI
           <Route exact path="/" render={()=>(
             <div className="list-books">
               <div className="list-books-title">
